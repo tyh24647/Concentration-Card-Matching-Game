@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Concentration (Final Project):jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Concentration__Final_Project__jar</output-path>
+    <root id="archive" name="Concentration (Final Project).jar">
+      <element id="module-output" name="Concentration (Final Project)" />
+    </root>
+  </artifact>
+</component>
