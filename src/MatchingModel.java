@@ -52,6 +52,7 @@ public class MatchingModel {
     public MatchingModel(int newNumRows, int newNumColumns) throws Exception {
         gameArray = new ArrayList<Integer>();
         numCards = newNumRows * newNumColumns;
+
         if (numCards % 2 != 0) {
             throw new Exception("\n\t* Error: Total number of cards must be even. *" +
                     "\n\t* Please restart program and try another board size. *");
@@ -87,10 +88,13 @@ public class MatchingModel {
         int cardValue = 1;
         int iterations = 0;
         int arrayValue;
+
         while (cardValues.size() < numCards / 2) {
             cardValues.add(cardValue);
             cardValue++;
-        } while (iterations < numCards / 2) {
+        }
+
+        while (iterations < numCards / 2) {
             arrayValue = cardValues.get(iterations);
             int randR1 = (int) (Math.random() * (numRows));
             int randC1 = (int) (Math.random() * (numColumns));
@@ -150,14 +154,20 @@ public class MatchingModel {
      * @return  True if both cards match.
      */
     public boolean matchedPair() {
+
         if (card1 == card2) {
             cardsRemaining -= 2;
+
             if (getCurrentPlayer() == 1) {
                 player1Score++;
             } else {
                 player2Score++;
-            } return true;
-        } currentPlayer++;
+            }
+
+            return true;
+        }
+
+        currentPlayer++;
         return false;
     }
 
@@ -256,27 +266,17 @@ public class MatchingModel {
             for (int i = 0; i < numRows; i++) {
                 for (int j = 0; j < numColumns; j++) {
                     if (gameArray.get((i * numColumns) + j) == -1) {
-                        if (j == numColumns - 1) {
-                            printString += unavailableCard + "\n";
-                        } else {
-                            printString += unavailableCard;
-                        }
+                        String adn = j == numColumns - 1 ? "\n" : "";
+                        printString += unavailableCard + adn;
                     } else if ((i * numColumns) + j == (row1 * numColumns) + column1
                             || (i * numColumns) + j == (row2 * numColumns) + column2) {
-                        if (j == numColumns - 1) {
-                            printString += " " + getCardData(i, j) + "\n";
-                        } else {
-                            printString += " " + getCardData(i, j);
-                        }
+                        printString += " " + getCardData(i, j) + (j == numColumns - 1 ? "\n" : "");
                     } else {
-                        if (j == numColumns - 1) {
-                            printString += defaultCard + "\n";
-                        } else {
-                            printString += defaultCard;
-                        }
+                        printString += defaultCard + (j == numColumns - 1 ? "\n" : "");
                     }
                 }
             }
+
             System.out.print("\n" + printString + "\n");
         }
     }
@@ -289,13 +289,11 @@ public class MatchingModel {
         String printString = "";
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numColumns; j++) {
-                if (j == numColumns - 1) {
-                    printString += " " + getCardData(i, j) + "\n";
-                } else {
-                    printString += " " + getCardData(i, j);
-                }
+                printString += " " + getCardData(i, j) + (j == numColumns -1 ? "\n" : "" );
             }
-        } return printString;
+        }
+
+        return printString;
     }
 
     /**

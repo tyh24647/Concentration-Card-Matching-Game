@@ -42,12 +42,15 @@ public class JBackgroundPanel extends JPanel {
     public void locateImage(String imageLocation) {
         try {
             bImage = ImageIO.read(getClass().getResource(imageLocation));
+
             if (debugModeEnabled) {
                 System.out.print("\n> Opening image file from location: \"src/" + imageLocation + "\".");
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
-        } setOpaque(true);
+        }
+
+        setOpaque(true);
     }
 
     /** Enables printing to the console when called */

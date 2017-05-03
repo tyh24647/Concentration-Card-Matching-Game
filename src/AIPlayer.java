@@ -85,11 +85,15 @@ public class AIPlayer {
             if (debugModeEnabled) {
                 System.out.print("\n> AI: Remembering card value \"" + cardValue
                         + "\" at location \"" + cardLocation + "\".");
-            } separateCardMemory.add(newMemory);
+            }
+
+            separateCardMemory.add(newMemory);
             if (separateCardMemory.size() >= cardMemSize) {
                 forgetRandomCard();
                 forgetRandomCard();
-            } Collections.sort(separateCardMemory);
+            }
+
+            Collections.sort(separateCardMemory);
             if (debugModeEnabled) {
                 System.out.print("\n> AI: Cards remembered: " + separateCardMemory);
             }
@@ -113,7 +117,9 @@ public class AIPlayer {
             for (int i = 0; i < separateCardMemory.size(); i++) {
                 AIRecentCardsMemory currentMemory = separateCardMemory.get(i);
                 int currentCardValue = currentMemory.getCardValue();
+
                 i++;
+
                 if (i == separateCardMemory.size() - 2) {
                     remembersMatchLocation = false;
                     break;
@@ -129,7 +135,9 @@ public class AIPlayer {
                     break;
                 }
             }
-        } if (!remembersMatchLocation) {
+        }
+
+        if (!remembersMatchLocation) {
             generateRandomGuess();
         }
     }
@@ -170,7 +178,9 @@ public class AIPlayer {
             if (separateCardMemory.get(i).toString().equals(memoryChecker.toString())) {
                 return true;
             }
-        } return false;
+        }
+
+        return false;
     }
 
     /**
@@ -185,24 +195,31 @@ public class AIPlayer {
     public void storeFailedPair(int row1, int column1, int row2, int column2) {
         int card1 = (row1 * numColumns) + column1;
         int card2 = (row2 * numColumns) + column2;
+
         String pairLocation = String.valueOf(card1) + String.valueOf(card2);
         String revPLocation = String.valueOf(card2) + String.valueOf(card1);
         AIPairsMemory newPair = new AIPairsMemory(card1, card2);
+
         if (nonMatchedPairs.isEmpty()) {
             nonMatchedPairs.add(newPair);
         } else {
             boolean addData = true;
             int counter = 0;
+
             while (counter < nonMatchedPairs.size()) {
                 if (nonMatchedPairs.get(counter).getData().equals(pairLocation)
                         || nonMatchedPairs.get(counter).getData().equals(revPLocation)) {
                     addData = false;
-                } counter++;
+                }
+
+                counter++;
             } if (addData) {
                 if (debugModeEnabled) {
                     System.out.print("\n> AI: Remembering unsuccessful match at indexes \"" + card1 +
                             "\" and \"" + card2 + "\".");
-                } nonMatchedPairs.add(newPair);
+                }
+
+                nonMatchedPairs.add(newPair);
             }
         } if (nonMatchedPairs.size() == getFailureMemSize()
                 && row1 != -1 && column1 != -1 && row2 != -1 && column2 != -1) {
@@ -221,6 +238,7 @@ public class AIPlayer {
     public boolean remembersFailedPair(int card1, int card2) {
         String pairToFind = String.valueOf(card1) + String.valueOf(card2);
         String revPairToFind = String.valueOf(card2) + String.valueOf(card1);
+
         int index = 0;
         while (index < nonMatchedPairs.size()) {
             if (nonMatchedPairs.get(index).getData().equals(pairToFind)
@@ -228,9 +246,15 @@ public class AIPlayer {
                 if (debugModeEnabled) {
                     System.out.print("\n> AI: Avoiding pair \"" + nonMatchedPairs.get(index).getCard1() +
                             "\" and \"" + nonMatchedPairs.get(index).getCard2() + "\".");
-                } return true;
-            } index++;
-        } return false;
+                }
+
+                return true;
+            }
+
+            index++;
+        }
+
+        return false;
     }
 
     /**
@@ -242,7 +266,9 @@ public class AIPlayer {
         if (debugModeEnabled) {
             System.out.print("\n> AI: Forgetting pair \"" + nonMatchedPairs.get(0).getCard1() + "\" " +
                     "and \"" + nonMatchedPairs.get(0).getCard2() + "\".");
-        } nonMatchedPairs.remove(0);
+        }
+
+        nonMatchedPairs.remove(0);
     }
 
     /**
@@ -251,11 +277,14 @@ public class AIPlayer {
      */
     public void forgetRandomCard() {
         int randomLocation = (int)(Math.random() * separateCardMemory.size());
+
         if (randomLocation < separateCardMemory.size()) {
             if (debugModeEnabled) {
                 System.out.print("\n> AI: Forgetting card \"" + separateCardMemory.get(randomLocation) +
                         "\" at index \"" + randomLocation + "\".");
-            } separateCardMemory.remove(randomLocation);
+            }
+
+            separateCardMemory.remove(randomLocation);
         } else {
             forgetRandomCard();
         }
@@ -272,6 +301,7 @@ public class AIPlayer {
     public void setDifficulty(int newDifficulty) {
         difficulty = newDifficulty;
         String difficultyString;
+
         if (difficulty == 1) {
             difficultyString = "Pathetic";
         } else if (difficulty == 2) {
@@ -282,10 +312,13 @@ public class AIPlayer {
             difficultyString = "Hard";
         } else {
             difficultyString = "Insane";
-        } if (debugModeEnabled) {
-            System.out.println("\n> AI: Difficulty set to \'"
-                    + difficultyString + "\'.");
-        } setTotalCardsRemembered();
+        }
+
+        if (debugModeEnabled) {
+            System.out.println("\n> AI: Difficulty set to \'"  + difficultyString + "\'.");
+        }
+
+        setTotalCardsRemembered();
         setNumFailsRecalled();
     }
 
@@ -302,16 +335,17 @@ public class AIPlayer {
      * difficulty specified by the user.
      */
     private void setNumFailsRecalled() {
-        if (getDifficulty() == 0) {
-            failureMemSize = 0;
-        } else if (getDifficulty() == 1) {
-            failureMemSize = 3;
-        } else if (getDifficulty() == 2) {
-            failureMemSize = 5;
-        } else if (getDifficulty() == 3) {
-            failureMemSize = 10;
-        } else {
-            failureMemSize = 10000;
+        switch (getDifficulty()) {
+            case 0:
+                failureMemSize = 0;
+            case 1:
+                failureMemSize = 3;
+            case 2:
+                failureMemSize = 5;
+            case 3:
+                failureMemSize = 10;
+            default:
+                failureMemSize = 1000;
         }
     }
 

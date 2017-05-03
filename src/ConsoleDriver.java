@@ -10,15 +10,19 @@ import java.util.Scanner;
 public class ConsoleDriver {
     public static void main(String[] args) {
         boolean restartGame = true;
+
         while (restartGame) {
             Scanner input = new Scanner(System.in);
+
             MatchingModel game;
             AIPlayer bot;
             AIPairsMemory memory = new AIPairsMemory();
+
             boolean noWinner = true;
             int playerTurn = 0;
             int maxGuesses = 2;
             boolean displayScore = true;
+
             System.out.print("\n" +
                     "_____________________\n" +
                     "|                   |\n" +
@@ -27,6 +31,7 @@ public class ConsoleDriver {
                     "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n" +
                     "Please submit desired game board dimensions...");
             System.out.print("\n» Number of rows: ");
+
             int numRows = input.nextInt();
             System.out.print("» Number of columns: ");
             int numColumns = input.nextInt();
@@ -46,13 +51,17 @@ public class ConsoleDriver {
                                 displayScore = false;
                                 System.out.print("\n\n______________\n|  Player " + game.getCurrentPlayer() +
                                         "  |\n¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n");
-                            } if (displayScore) {
+                            }
+
+                            if (displayScore) {
                                 System.out.print("\nSCORE:\n¯¯¯¯¯¯¯¯¯¯¯\nPlayer 1: " + game.getPlayer1Score() +
                                         "\nPlayer 2: " + game.getPlayer2Score());
                                 Thread.sleep(100);
                                 System.out.print("\n\n\n______________\n|  Player " + game.getCurrentPlayer() +
                                         "  |\n¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n");
-                            } if (game.getCurrentPlayer() == 1) {
+                            }
+
+                            if (game.getCurrentPlayer() == 1) {
                                 displayScore = true;
                                 guessCounter++;             // TODO Fix - should always either be 1 or 2
                                 System.out.print("\nGuess #" + guessCounter + "\n» Enter desired row: ");
@@ -71,15 +80,21 @@ public class ConsoleDriver {
                                 int cardValue2 = game.getCardData(row2, column2);
                                 int card1Location = (row1 * numColumns) + column1;
                                 int card2Location = (row2 * numColumns) + column2;
+
                                 if (!bot.recallsIndividualCard(row1, column1, card1Location, cardValue1)
                                         && game.getCardData(row1, column1) != -1) {
                                     bot.addCardToMemory(row1, column1, card1Location, cardValue1);
-                                } if (!bot.recallsIndividualCard(row2, column2, card2Location, cardValue2)
+                                }
+
+                                if (!bot.recallsIndividualCard(row2, column2, card2Location, cardValue2)
                                         && game.getCardData(row2, column2) != -1) {
                                     bot.addCardToMemory(row2, column2, card2Location, cardValue2);
-                                } Thread.sleep(600);
+                                }
+
+                                Thread.sleep(600);
                                 if (game.matchedPair()) {
                                     System.out.print("\n\t* It's a match! *\n\n");
+
                                     if (game.gameOver()) {
                                         noWinner = false;
                                         break;
@@ -106,7 +121,9 @@ public class ConsoleDriver {
                                     int botColumn2 = bot.getColumn2Guess();
                                     int card1Location = (botRow1 * numColumns) + botColumn1;
                                     int card2location = (botRow2 * numColumns) + botColumn2;
+
                                     boolean logicalGuess = false;
+
                                     while (!logicalGuess) {
                                         bot.makeIntelligentGuess();
                                         botRow1 = bot.getRow1Guess();
@@ -115,10 +132,11 @@ public class ConsoleDriver {
                                         botColumn2 = bot.getColumn2Guess();
                                         card1Location = (botRow1 * numColumns) + botColumn1;
                                         card2location = (botRow2 * numColumns) + botColumn2;
-                                        if (!bot.remembersFailedPair(card1Location, card2location)) {
-                                            logicalGuess = true;
-                                        }
-                                    } displayScore = true;
+                                        if (!bot.remembersFailedPair(card1Location, card2location)) logicalGuess = true;
+                                    }
+
+                                    displayScore = true;
+
                                     guessCounter++;
                                     System.out.print("\nGuess #" + guessCounter + "\n» Enter desired row: ");
                                     Thread.sleep(1000);
@@ -141,13 +159,17 @@ public class ConsoleDriver {
                                     game.printBoard(botRow1, botColumn1, botRow2, botColumn2);
                                     int cardValue1 = game.getCardData(botRow1, botColumn1);
                                     int cardValue2 = game.getCardData(botRow2, botColumn2);
+
                                     if (!bot.recallsIndividualCard(botRow1, botColumn1, card1Location, cardValue1)
                                             && game.getCardData(botRow1, botColumn1) != -1) {
                                         bot.addCardToMemory(botRow1, botColumn1, card1Location, cardValue1);
-                                    } if (!bot.recallsIndividualCard(botRow2, botColumn2, card2location, cardValue2)
+                                    }
+
+                                    if (!bot.recallsIndividualCard(botRow2, botColumn2, card2location, cardValue2)
                                             && game.getCardData(botRow2, botColumn2) != -1) {
                                         bot.addCardToMemory(botRow2, botColumn2, card2location, cardValue2);
                                     }
+
                                     Thread.sleep(600);
                                     if (game.matchedPair()) {
                                         System.out.print("\n\t* It's a match! *\n\n");
@@ -174,26 +196,36 @@ public class ConsoleDriver {
                                 } catch (Exception e) {
                                     System.out.print("\n" + e.getMessage() + "\n");
                                 }
+
                                 displayScore = false;
                             }
                         } catch (Exception e) {
                             System.out.print(e.getMessage());
                         }
                     }
-                } System.out.print("\n     _______________\n     |  Game Over  |     \n     ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯");
+                }
+
+                System.out.print("\n     _______________\n     |  Game Over  |     \n     ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯");
+
                 if (game.getWinner() == 0) {
                     System.out.print("\n» The game was a tie!\n");
                 } else {
                     Thread.sleep(300);
                     System.out.print("\n» The winner is");
+
                     for (int i = 0; i < 3; i++) {
                         Thread.sleep(300);
                         System.out.print(".");
                         Thread.sleep(600);
-                    } System.out.print(" Player ");
+                    }
+
+                    System.out.print(" Player ");
                     Thread.sleep(198);
                     System.out.print(game.getWinner() + "!\n");
-                } System.out.print("Would you like to try again? (1 = \"Yes\"), (2 = \"No\"): ");
+                }
+
+                System.out.print("Would you like to try again? (1 = \"Yes\"), (2 = \"No\"): ");
+
                 int decision = input.nextInt();
                 if (decision == 2) {
                     Thread.sleep(1000);

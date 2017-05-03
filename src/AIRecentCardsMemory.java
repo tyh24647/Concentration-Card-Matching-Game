@@ -62,7 +62,8 @@ public class AIRecentCardsMemory implements Comparable<AIRecentCardsMemory> {
     public int compareTo(AIRecentCardsMemory otherMemory) {
         int compareCardValue, compareRow, compareColumn;
 
-        String currentCardValue = String.valueOf(this.getCardValue()),
+        String
+                currentCardValue = String.valueOf(this.getCardValue()),
                 otherMemoryValue = String.valueOf(otherMemory.getCardValue()),
                 currentRow = String.valueOf(this.getRow()),
                 otherMemoryRow = String.valueOf(otherMemory.getRow()),
@@ -70,17 +71,20 @@ public class AIRecentCardsMemory implements Comparable<AIRecentCardsMemory> {
                 otherMemoryColumn = String.valueOf(otherMemory.getColumn());
 
         compareCardValue = currentCardValue.compareTo(otherMemoryValue);
+
         if (compareCardValue < 0) {
             return -1;
         } else if (compareCardValue > 0) {
             return 1;
         } else {
             compareRow = currentRow.compareTo(otherMemoryRow);
+
             if (compareRow < 0) {
                 return -1;
             } else if (compareRow > 0) {
                 return 1;
             } else {
+
                 compareColumn = currentColumn.compareTo(otherMemoryColumn);
                 if (compareColumn < 0) {
                     return -1;
