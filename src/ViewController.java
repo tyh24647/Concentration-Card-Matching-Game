@@ -1064,6 +1064,7 @@ public class ViewController extends JFrame implements ActionListener {
                 newCardImage.getHeight(null) / sizeDivisor, Image.SCALE_SMOOTH);
 
         cardIcon.setImage(newCardImage);
+        
         return cardIcon;
     }
 
