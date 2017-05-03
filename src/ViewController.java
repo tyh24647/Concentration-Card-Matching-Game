@@ -1,13 +1,20 @@
+import com.sun.istack.internal.NotNull;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.PrintStream;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * ViewController class is the graphic user interface for the program, which provides
@@ -83,6 +90,8 @@ public class ViewController extends JFrame implements ActionListener {
 
     /** Console view */
     private JDialog consoleView;
+
+    private static final String RED = "RED", BLUE = "BLUE", BLACK = "BLACK", GOLD = "GOLD";
 
     /** Constructor */
     public ViewController() {
@@ -965,15 +974,9 @@ public class ViewController extends JFrame implements ActionListener {
         setDefaultCardBackground(deckTheme);
         String picLocation = null;
         try {
-            if (deckTheme.equals("Red")) {
-                picLocation = "Resources/Images/RedCard.png";
-            } else if (deckTheme.equals("Blue")) {
-                picLocation = "Resources/Images/BlueCard.png";
-            } else if (deckTheme.equals("Black")) {
-                picLocation = "Resources/Images/BlackCard.png";
-            } else if (deckTheme.equals("Gold")) {
-                picLocation = "Resources/Images/GoldCard.png";
-            } ImageIcon cardIcon = getImgResource(picLocation);
+            picLocation = "Resources/Images/RedCard.png";
+            ImageIcon cardIcon = getImgResource(picLocation);
+
             if (debugModeEnabled) {
                 System.out.print("\n> Opening image file from location: \"" + picLocation + "\".");
             } for (int i = 0; i < game.getNumRows(); i ++) {
@@ -1001,21 +1004,30 @@ public class ViewController extends JFrame implements ActionListener {
         int cardData = game.getCardData(row, column);
         String picLocation = null;
         try {
-            if (cardBackground.equals("Red")) {
+
+            // determine appropriate background img
+            if (cardBackground.equals(RED)) {
                 picLocation = "Resources/Images/RedCard.png";
-            } else if (cardBackground.equals("Blue")) {
+            } else if (cardBackground.equals(BLUE)) {
                 picLocation = "Resources/Images/BlueCard.png";
-            } else if (cardBackground.equals("Black")) {
+            } else if (cardBackground.equals(BLACK)) {
                 picLocation = "Resources/Images/BlackCard.png";
-            } else if (cardBackground.equals("Gold")) {
+            } else if (cardBackground.equals(GOLD)) {
                 picLocation = "Resources/Images/GoldCard.png";
-            } if (debugModeEnabled) {
+            }
+
+            if (debugModeEnabled) {
                 System.out.print("\n> Opening image file from location: \" " + picLocation + "\"n");
-            } ImageIcon cardIcon = getImgResource(picLocation);
+            }
+
+            ImageIcon cardIcon = getImgResource(picLocation);
 
             if (cardData > 13) {
                 getGridButton(row, column).setText(null);
-            } getGridButton(row, column).setIcon(cardIcon);
+            }
+
+            getGridButton(row, column).setIcon(cardIcon);
+
             mainPanel.repaint();
             mainPanel.revalidate();
         } catch(Exception e){
@@ -1033,9 +1045,10 @@ public class ViewController extends JFrame implements ActionListener {
      * @throws Exception    If the image is not contained in the files
      */
     private ImageIcon getImgResource(String picLocation) throws Exception {
-        BufferedImage cardImage = ImageIO.read(getClass().getResource(picLocation));
-        ImageIcon cardIcon = new ImageIcon(cardImage);
+        BufferedImage cardImage = generateBfrdImgFromLocation(picLocation);
+        ImageIcon cardIcon = generateImgIconFromBufferedImg(cardImage);
         Image newCardImage = cardIcon.getImage();
+
         int sizeDivisor;
         if (numCards < 25) {
             sizeDivisor = 4;
@@ -1043,12 +1056,36 @@ public class ViewController extends JFrame implements ActionListener {
             sizeDivisor = 5;
         } else {
             sizeDivisor = 6;
-        } setDataViewSize(sizeDivisor);
+        }
+
+        setDataViewSize(sizeDivisor);
+
         newCardImage = newCardImage.getScaledInstance(newCardImage.getWidth(null) / sizeDivisor,
                 newCardImage.getHeight(null) / sizeDivisor, Image.SCALE_SMOOTH);
+
         cardIcon.setImage(newCardImage);
         return cardIcon;
     }
+
+    @NotNull
+    private BufferedImage generateBfrdImgFromLocation(String picLocation) throws IOException {
+        if (picLocation == null || picLocation.equals("")) {
+            System.out.println("Error generating bufferred image\nSkpipping procedure\n");
+            return null;
+        }
+
+        return ImageIO.read(getClass().getResource(picLocation));
+    }
+
+    @NotNull
+    private ImageIcon generateImgIconFromBufferedImg(@NotNull BufferedImage img) {
+        if (img == null) {
+            return null;
+        }
+
+        return new ImageIcon(img);
+    }
+
 
     /**
      * Sets the window size according to the size
@@ -1058,13 +1095,16 @@ public class ViewController extends JFrame implements ActionListener {
      */
     private void setDataViewSize(int newSizeDivisor) {
         Dimension viewDimension;
+
         if (newSizeDivisor == 4) {
             viewDimension = new Dimension(1100, 725);
         } else if (newSizeDivisor == 6) {
             viewDimension = new Dimension(1200, 900);
         } else {
             viewDimension = new Dimension(1400, 900);
-        } layeredViewPane.setPreferredSize(viewDimension);
+        }
+
+        layeredViewPane.setPreferredSize(viewDimension);
     }
 
     /**
@@ -1085,13 +1125,16 @@ public class ViewController extends JFrame implements ActionListener {
             defaultFont = getFont();
             String westernFontPath = "Resources/Fonts/Western.ttf";
             String tropicalFontPath = "Resources/Fonts/Tropical.ttf";
+
             if (debugModeEnabled) {
                 System.out.print("\n> Opening font file from location: \"" + westernFontPath + "\".");
             } westernFont = Font.createFont(Font.TRUETYPE_FONT,
                     getClass().getResourceAsStream(westernFontPath));
             if (debugModeEnabled) {
                 System.out.print("\n> Opening font file from location: \"" + tropicalFontPath + "\".");
-            } tropicalFont = Font.createFont(Font.TRUETYPE_FONT,
+            }
+
+            tropicalFont = Font.createFont(Font.TRUETYPE_FONT,
                     getClass().getResourceAsStream(tropicalFontPath));
         } catch (Exception e) {
             e.printStackTrace();
@@ -1104,6 +1147,8 @@ public class ViewController extends JFrame implements ActionListener {
      * @param newTheme  The title of the new theme.
      */
     private void setAppBackground(String newTheme) {
+
+        // standard theme enabled
         if (newTheme.equals(menuBarObj.getDefaultWP().getText())) {
             topBanner.setText("♥               ♠            - " +
                     "CONCENTRATION -            ♦               ♣");
@@ -1129,7 +1174,10 @@ public class ViewController extends JFrame implements ActionListener {
             displayCards.setBackground(darkGreen);
             displayCards.setForeground(lightGold);
             displayCards.setBorder(BorderFactory.createMatteBorder(10, 10, 10, 10, darkGreen));
-        } if (newTheme.equals(menuBarObj.getTropical().getText())) {
+        }
+
+        // tropical theme enabled
+        if (newTheme.equals(menuBarObj.getTropical().getText())) {
             topBanner.setText("CONCENTRATION");
             resultLabel.setBackground(darkBlue);
             resultLabel.setForeground(lightBlue);
@@ -1153,7 +1201,10 @@ public class ViewController extends JFrame implements ActionListener {
             displayCards.setBackground(darkBlue);
             displayCards.setForeground(lightBlue);
             displayCards.setBorder(BorderFactory.createMatteBorder(10, 10, 10, 10, darkBlue));
-        } if (newTheme.equals(menuBarObj.getWestern().getText())) {
+        }
+
+        // western theme enabled
+        if (newTheme.equals(menuBarObj.getWestern().getText())) {
             topBanner.setText("CONCENTRATION");
             topBanner.setForeground(lightGold);
             topBanner.setBackground(darkBrown);
@@ -1177,7 +1228,9 @@ public class ViewController extends JFrame implements ActionListener {
             displayCards.setBackground(darkBrown);
             displayCards.setForeground(lightGold);
             displayCards.setBorder(BorderFactory.createMatteBorder(10, 10, 10, 10, darkBrown));
-        } layeredViewPane.remove(backgroundPanel);
+        }
+
+        layeredViewPane.remove(backgroundPanel);
         backgroundPanel = new JBackgroundPanel(newTheme);
         layeredViewPane.add(backgroundPanel, BorderLayout.CENTER);
         layeredViewPane.revalidate();
@@ -1190,6 +1243,7 @@ public class ViewController extends JFrame implements ActionListener {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (Exception e) {/* Do nothing*/}
+
             ViewController gui = new ViewController();
         } catch (NullPointerException e) {
             JOptionPane.showMessageDialog(null, "    * Error: Unable to initialize game *");

@@ -45,7 +45,7 @@
     <option name="name" value="default" />
   </component>
   <component name="IdProvider" IDEtalkID="EE7A0FB00C2DE979CEB63548E039A9ED" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" project-jdk-name="1.6" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
